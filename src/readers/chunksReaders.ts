@@ -23,6 +23,10 @@ export abstract class ChunckReader extends Reader{
 export class IHDRChunkReader extends ChunckReader{
     protected chunckData: Uint8Array;
     protected readonly headerNumber = 295;
+    private chunckLength = 13;
+    readable(binary: IIteratableBinary): boolean {
+        return this.headerMatch(binary.nextBytes(8).sum());
+    }
     read(binary: IIteratableBinary, builder: PNGBuilder): void {
         const width = binary.nextBytes(4).stack();
         const height = binary.nextBytes(4).stack();
@@ -33,12 +37,16 @@ export class IHDRChunkReader extends ChunckReader{
         const isInterlaced = binary.nextByte();
 
         builder.setWidth(width)
-        builder.setHeight(height)
-        builder.setBitDepth(bitDepth)
-        builder.setColor(color)
-        builder.setCompressionMethod(compressionMethod)
-        builder.setFilterMethod(filterMethod)
-        builder.setIsInterlaced(isInterlaced)
+        .setHeight(height)
+        .setBitDepth(bitDepth)
+        .setColor(color)
+        .setCompressionMethod(compressionMethod)
+        .setFilterMethod(filterMethod)
+        .setIsInterlaced(isInterlaced)
+    }
+    isChunckLengthMatch(length: number){
+        if(this.chunckLength !== length) return true
+        return false
     }
 }
 
@@ -50,6 +58,10 @@ export class PLTEChunkReader extends ChunckReader{
         const plteDataPlatted = plteDataRaw.packEvery(3);
 
         builder.setPaletteEntries(plteDataPlatted)
+    }
+    isChunckLengthDivisibleByThree(length: number){
+        if(length % 3 === 0) return true;
+        return false;
     }
 }
 
