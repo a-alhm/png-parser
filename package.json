@@ -1,0 +1,38 @@
+{
+  "name": "png-parser",
+  "version": "0.0.1",
+  "description": "later",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "test": "mocha -r ts-node/register 'tests/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "later"
+  },
+  "keywords": [
+    "later"
+  ],
+  "author": "Anas Alhumud",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.3.3",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.7.16",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "ts-loader": "^9.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "crc": "^4.1.1",
+    "inversify": "^6.0.1",
+    "pako": "^2.0.4",
+    "reflect-metadata": "^0.1.13"
+  }
+}
