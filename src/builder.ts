@@ -12,41 +12,53 @@ export default class PNGBuilder  {
     this._InflatedImageData = [];
   }
   
-  setWidth(width: number): void {
+  setWidth(width: number): PNGBuilder {
     this._png.width = width;
+    return this;
   }
-  setHeight(height: number): void {
+  setHeight(height: number): PNGBuilder {
     this._png.height = height
+    return this;
   }
-  setBitDepth(bitDepth: number): void {
+  setBitDepth(bitDepth: number): PNGBuilder {
     this._png.bitDepth = bitDepth
+    return this;
   }
-  setColor(color: number): void {
+  setColor(color: number): PNGBuilder {
     this._png.color = color
+    return this;
   }
-  setCompressionMethod(method: number): void {
+  setCompressionMethod(method: number): PNGBuilder {
     this._png.compressionMethod = method
+    return this;
   }
-  setFilterMethod(method: number): void {
+  setFilterMethod(method: number): PNGBuilder {
     this._png.filterMethod = method
+    return this;
   }
-  setPaletteEntries(entries: Uint8Array[]): void {
+  setPaletteEntries(entries: Uint8Array[]): PNGBuilder {
     this._png.paletteEntries = entries;
+    return this;
   }
-  setPaletteEntriesTransparency(entries: Uint8Array): void {
+  setPaletteEntriesTransparency(entries: Uint8Array): PNGBuilder {
     this._png.paletteEntriesTransparency = entries;
+    return this;
   }
-  setIsInterlaced(isInterlaced: number): void {
+  setIsInterlaced(isInterlaced: number): PNGBuilder {
     this._png.isInterlaced = isInterlaced;
+    return this;
   }
-  pushImageData(data: Uint8Array): void {
+  pushImageData(data: Uint8Array): PNGBuilder {
     this._InflatedImageData.push(...data)
+    return this;
   }
-  inflateImageData(): void {
+  inflateImageData(): PNGBuilder {
     this._png.ImageData = pako.inflate(this._InflatedImageData);
+    return this;
   }
-  setGamaIntensity(data: number): void{
+  setGamaIntensity(data: number): PNGBuilder{
     this._png.gamaIntensity = data
+    return this;
   }
   getPNG(): PNG {
     return this._png;
