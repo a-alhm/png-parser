@@ -14,7 +14,7 @@ import {
   IENDChunkReader,
   gAMAChunkReader
 }
-from "./readers/chunkReaders";
+from "./readers/chunksReaders";
 
 @injectable()
 export default class Parser {
@@ -32,24 +32,57 @@ export default class Parser {
 
     this._enumrableBinary.setInput(byets)
 
+    this.parseFileSignature()
+    .parseIHDRChunk()
+    .parseAncillaryChunks()
+    .parsePLTEChunk()
+    .verifyPLTEChunkWithColorType()
+    .parseIDATChunk()
+    .parseIENDChunk()
+
+
+    return this._PNGBuilder.getPNG();
+  }
+
+  private parseFileSignature(): Parser{
     const fileSignatureReader : Reader = new FileSignatureReader();
     
     if (!fileSignatureReader.readable(this._enumrableBinary))
       throw Error("not a PNG file")
 
-    const chunksReaders: ChunckReader[] = [
-      new IHDRChunkReader(),
-      new PLTEChunkReader(),
+    return this;
+  }
+  private parseIHDRChunk(): Parser{
+    const iHDRChunkReader = new IHDRChunkReader()
+
+    if(!iHDRChunkReader.readable(this._enumrableBinary))
+      throw Error("Couldn't Find IHDR header")
+    
+    const iHDRChunkLength = this._enumrableBinary.nextBytes(4).stack();
+
+    if(!iHDRChunkReader.isChunckLengthMatch(iHDRChunkLength))
+      throw Error("IHDR chunck length is unexpected")
+
+    iHDRChunkReader.setChunckData(this._enumrableBinary, iHDRChunkLength)
+
+    iHDRChunkReader.read(this._enumrableBinary, this._PNGBuilder)
+
+    if(iHDRChunkReader.isChunckDataCorrupted(this._enumrableBinary))
+      throw new Error("Unexpected CRC");
+
+    return this;
+  }
+  private parseAncillaryChunks(): Parser{
+    
+    const ancillaryChunksReaders: ChunckReader[] = [
       new gAMAChunkReader(),
       new tRNSChunkReader(),
-      new IDATChunkReader(),
-      new IENDChunkReader()
-    ]
-
-    let chunkLength: number = this._enumrableBinary.nextBytes(4).stack();
+    ];
     
-    for (let index = 0; index < chunksReaders.length; index++) {
-      const reader = chunksReaders[index]
+    let chunkLength = this._enumrableBinary.nextBytes(4).stack();
+
+    for (let index = 0; index < ancillaryChunksReaders.length; index++) {
+      const reader = ancillaryChunksReaders[index]
 
       if (reader.readable(this._enumrableBinary)) {
 
@@ -58,12 +91,48 @@ export default class Parser {
           reader.read(this._enumrableBinary, this._PNGBuilder, chunkLength)
           
           if(reader.isChunckDataCorrupted(this._enumrableBinary))
-            throw new Error("");
+            throw new Error("Unexpected CRC");
           
           chunkLength = this._enumrableBinary.nextBytes(4).stack();
       }
     }
+    return this;
+  }
+  private parsePLTEChunk(): Parser{
+    const pLTERChunkReader = new PLTEChunkReader()
 
-    return this._PNGBuilder .getPNG();
+    if(!pLTERChunkReader.readable(this._enumrableBinary)){
+
+      const pLTEChunkLength = this._enumrableBinary.nextBytes(4).stack();
+  
+      if(!pLTERChunkReader.isChunckLengthDivisibleByThree(pLTEChunkLength))
+        throw Error("PLTE chunck length is unexpected")
+
+      pLTERChunkReader.setChunckData(this._enumrableBinary, pLTEChunkLength)
+
+      pLTERChunkReader.read(this._enumrableBinary, this._PNGBuilder, pLTEChunkLength)
+  
+      if(pLTERChunkReader.isChunckDataCorrupted(this._enumrableBinary))
+        throw new Error("CRC for IHDR chunck is unexpected");
+    }
+    
+    return this;
+  }
+  private verifyPLTEChunkWithColorType(): Parser{
+    const png = this._PNGBuilder.getPNG()
+    
+    if(png.paletteEntries !== undefined 
+    && ![2,3,6].includes(png.color) ){
+      throw new Error("PLTE chunck should appear for only color types 2, 3 and 6")
+    }
+    return this;
+  }
+  private parseIDATChunk(): Parser{
+    
+    return this;
+  }
+  private parseIENDChunk(): Parser{
+    
+    return this;
   }
 }
