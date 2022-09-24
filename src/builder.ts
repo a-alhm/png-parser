@@ -1,6 +1,8 @@
 import PNG from "./png";
 import pako from "pako"
+import { injectable } from "inversify";
 
+@injectable()
 export default class PNGBuilder  {
   private _png
   private _InflatedImageData: Array<number>;

@@ -19,10 +19,14 @@ from "./readers/chunkReaders";
 @injectable()
 export default class Parser {
   private readonly _enumrableBinary: IIteratableBinary
+  private readonly _PNGBuilder: PNGBuilder
+
   constructor(
-    @inject(TYPES.IIteratableBinary) enumrableBinary: IIteratableBinary
+    @inject(TYPES.IIteratableBinary) enumrableBinary: IIteratableBinary,
+    @inject(TYPES.PNGBuilder) builder: PNGBuilder
   ) {
     this._enumrableBinary = enumrableBinary
+    this._PNGBuilder = builder;
   }
   parse(byets: ArrayBuffer): PNG {
 
@@ -42,8 +46,6 @@ export default class Parser {
       new IENDChunkReader()
     ]
 
-    const _PNGBuilder = new PNGBuilder();
-
     let chunkLength: number = this._enumrableBinary.nextBytes(4).stack();
     
     for (let index = 0; index < chunksReaders.length; index++) {
@@ -53,7 +55,7 @@ export default class Parser {
 
           reader.setChunckData(this._enumrableBinary, chunkLength)
 
-          reader.read(this._enumrableBinary, _PNGBuilder, chunkLength)
+          reader.read(this._enumrableBinary, this._PNGBuilder, chunkLength)
           
           if(reader.isChunckDataCorrupted(this._enumrableBinary))
             throw new Error("");
@@ -62,6 +64,6 @@ export default class Parser {
       }
     }
 
-    return _PNGBuilder.getPNG();
+    return this._PNGBuilder .getPNG();
   }
 }
