@@ -1,19 +1,17 @@
 import fs from "fs"
 import path from "path"
-
 import { expect } from 'chai';
 import parsePng from '../../index'
-
-let dependencies = [
-    "./images/basn0g01",
-];
+import PNG from "../../src/png";
 
 
 describe('Basic Formats', () => {
     it('black & white', () => {
-        const buffer = fs.readFileSync(path.join(__dirname, "images", 'basn0g01.png'), null).buffer
-        const png = parsePng(buffer);
-        console.log(png)
+        fs.createReadStream(path.join(__dirname, "images", 'basn0g01.png'))
+        .on('data', (data) => {
+            const png = parsePng(data);
+            expect(png).instanceOf(PNG)
+        });
     });
     it('grayscale', () => {
 
