@@ -3,9 +3,13 @@ import pako from "pako"
 
 export default class PNGBuilder  {
   private _png
+  private _InflatedImageData: Array<number>;
+
   constructor(){
     this._png = new PNG()
+    this._InflatedImageData = [];
   }
+  
   setWidth(width: number): void {
     this._png.width = width;
   }
@@ -34,10 +38,10 @@ export default class PNGBuilder  {
     this._png.isInterlaced = isInterlaced;
   }
   pushImageData(data: Uint8Array): void {
-    this._png.ImageData.push(...data)
+    this._InflatedImageData.push(...data)
   }
   inflateImageData(): void {
-    this._png.deflatedImageData = pako.inflate(this._png.ImageData);
+    this._png.ImageData = pako.inflate(this._InflatedImageData);
   }
   setGamaIntensity(data: number): void{
     this._png.gamaIntensity = data

@@ -1,9 +1,5 @@
 export default class PNG {
-    constructor(){
-        this.ImageData = [];
-    }
-    deflatedImageData;
-    ImageData: Array<number>;
+    ImageData;
     plte: Uint8Array;
     tRNS: Uint8Array;
     isInterlaced: number;
