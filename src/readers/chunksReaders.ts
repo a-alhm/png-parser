@@ -24,9 +24,6 @@ export class IHDRChunkReader extends ChunckReader{
     protected chunckData: Uint8Array;
     protected readonly headerNumber = 295;
     private chunckLength = 13;
-    readable(binary: IIteratableBinary): boolean {
-        return this.headerMatch(binary.nextBytes(8).sum());
-    }
     read(binary: IIteratableBinary, builder: PNGBuilder): void {
         const width = binary.nextBytes(4).stack();
         const height = binary.nextBytes(4).stack();
@@ -45,7 +42,7 @@ export class IHDRChunkReader extends ChunckReader{
         .setIsInterlaced(isInterlaced)
     }
     isChunckLengthMatch(length: number){
-        if(this.chunckLength !== length) return true
+        if(this.chunckLength === length) return true
         return false
     }
 }

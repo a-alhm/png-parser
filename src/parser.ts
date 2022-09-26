@@ -40,12 +40,11 @@ export default class Parser {
     .parseIDATChunk()
     .parseIENDChunk()
 
-
     return this._PNGBuilder.getPNG();
   }
 
   private parseFileSignature(): Parser{
-    const fileSignatureReader : Reader = new FileSignatureReader();
+    const fileSignatureReader : FileSignatureReader = new FileSignatureReader();
     
     if (!fileSignatureReader.readable(this._enumrableBinary))
       throw Error("not a PNG file")
@@ -78,22 +77,20 @@ export default class Parser {
       new gAMAChunkReader(),
       new tRNSChunkReader(),
     ];
-    
-    let chunkLength = this._enumrableBinary.nextBytes(4).stack();
 
     for (let index = 0; index < ancillaryChunksReaders.length; index++) {
       const reader = ancillaryChunksReaders[index]
 
       if (reader.readable(this._enumrableBinary)) {
 
-          reader.setChunckData(this._enumrableBinary, chunkLength)
+        let chunkLength = this._enumrableBinary.nextBytes(4).stack();
 
-          reader.read(this._enumrableBinary, this._PNGBuilder, chunkLength)
+        reader.setChunckData(this._enumrableBinary, chunkLength)
+
+        reader.read(this._enumrableBinary, this._PNGBuilder, chunkLength)
           
-          if(reader.isChunckDataCorrupted(this._enumrableBinary))
-            throw new Error("Unexpected CRC");
-          
-          chunkLength = this._enumrableBinary.nextBytes(4).stack();
+        if(reader.isChunckDataCorrupted(this._enumrableBinary))
+          throw new Error("Unexpected CRC");          
       }
     }
     return this;
@@ -101,7 +98,7 @@ export default class Parser {
   private parsePLTEChunk(): Parser{
     const pLTERChunkReader = new PLTEChunkReader()
 
-    if(!pLTERChunkReader.readable(this._enumrableBinary)){
+    if(pLTERChunkReader.readable(this._enumrableBinary)){
 
       const pLTEChunkLength = this._enumrableBinary.nextBytes(4).stack();
   
@@ -113,7 +110,7 @@ export default class Parser {
       pLTERChunkReader.read(this._enumrableBinary, this._PNGBuilder, pLTEChunkLength)
   
       if(pLTERChunkReader.isChunckDataCorrupted(this._enumrableBinary))
-        throw new Error("CRC for IHDR chunck is unexpected");
+        throw new Error("Unexpected CRC");
     }
     
     return this;
