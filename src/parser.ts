@@ -125,7 +125,21 @@ export default class Parser {
     return this;
   }
   private parseIDATChunk(): Parser{
+    const iDATChunkReader = new IDATChunkReader(); 
+        
+    while(iDATChunkReader.readable(this._enumrableBinary)){
+
+      let chunkLength = this._enumrableBinary.nextBytes(4).stack();
+
+      iDATChunkReader.setChunckData(this._enumrableBinary, chunkLength)
+
+      iDATChunkReader.read(this._enumrableBinary, this._PNGBuilder, chunkLength)
+        
+      if(iDATChunkReader.isChunckDataCorrupted(this._enumrableBinary))
+        throw new Error("Unexpected CRC");              
     
+    }
+
     return this;
   }
   private parseIENDChunk(): Parser{
