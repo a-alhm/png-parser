@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 import PNGBuilder from "./builder";
 import IIteratableBinary from "./IIteratableBinary"
-import Reader from "./readers/baseReader";
 import { TYPES } from "./types";
 import PNG from "./png";
 import FileSignatureReader from "./readers/fileSignatureReader";
