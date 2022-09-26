@@ -142,8 +142,19 @@ export default class Parser {
 
     return this;
   }
-  private parseIENDChunk(): Parser{
+  private parseIENDChunk(): void{
+    const iENDChunkReader = new IENDChunkReader()
+
+    if(!iENDChunkReader.readable(this._enumrableBinary))
+      throw Error("Couldn't Find IEND header")
     
-    return this;
+    const iENDChunkLength = this._enumrableBinary.nextBytes(4).stack();
+
+    iENDChunkReader.setChunckData(this._enumrableBinary, iENDChunkLength)
+
+    iENDChunkReader.read(this._enumrableBinary, this._PNGBuilder)
+
+    if(iENDChunkReader.isChunckDataCorrupted(this._enumrableBinary))
+      throw new Error("Unexpected CRC");
   }
 }
