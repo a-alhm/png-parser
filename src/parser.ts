@@ -82,7 +82,12 @@ export default class Parser {
 
         reader.setChunckData(this._enumrableBinary, chunkLength);
 
-        reader.read(this._enumrableBinary, this._PNGBuilder, chunkLength);
+        reader.read(
+          this._enumrableBinary,
+          this._PNGBuilder,
+          chunkLength,
+          ancillaryChunksReaders
+        );
 
         if (reader.isChunckDataCorrupted(this._enumrableBinary))
           throw new Error("Unexpected CRC");

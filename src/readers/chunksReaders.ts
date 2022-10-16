@@ -8,7 +8,8 @@ export abstract class ChunckReader extends Reader {
   abstract read(
     binary: IIteratableBinary,
     builder: PNGBuilder,
-    chunkLength?: number
+    chunkLength?: number,
+    readers?: ChunckReader[]
   ): void;
   setChunckData(binary: IIteratableBinary, chunkLength: number): void {
     this.chunckData = Uint8Array.from([
