@@ -54,12 +54,12 @@ export default class Parser {
     if (!iHDRChunkReader.readable(this._enumrableBinary))
       throw Error("Couldn't Find IHDR header");
 
-    const iHDRChunkLength = this._enumrableBinary.nextBytes(4).stack();
+    iHDRChunkReader.readAndSetChunkLength(this._enumrableBinary);
 
-    if (!iHDRChunkReader.isChunckLengthMatch(iHDRChunkLength))
+    if (!iHDRChunkReader.chunckLengthMatch())
       throw Error("IHDR chunck length is unexpected");
 
-    iHDRChunkReader.setChunckData(this._enumrableBinary, iHDRChunkLength);
+    iHDRChunkReader.readAndSetChunckData(this._enumrableBinary);
 
     iHDRChunkReader.read(this._enumrableBinary, this._PNGBuilder);
 
@@ -78,14 +78,12 @@ export default class Parser {
       const reader = ancillaryChunksReaders[index];
 
       if (reader.readable(this._enumrableBinary)) {
-        let chunkLength = this._enumrableBinary.nextBytes(4).stack();
-
-        reader.setChunckData(this._enumrableBinary, chunkLength);
+        reader.readAndSetChunkLength(this._enumrableBinary);
+        reader.readAndSetChunckData(this._enumrableBinary);
 
         reader.read(
           this._enumrableBinary,
           this._PNGBuilder,
-          chunkLength,
           ancillaryChunksReaders
         );
 
@@ -104,13 +102,9 @@ export default class Parser {
       if (!pLTERChunkReader.isChunckLengthDivisibleByThree(pLTEChunkLength))
         throw Error("PLTE chunck length is unexpected");
 
-      pLTERChunkReader.setChunckData(this._enumrableBinary, pLTEChunkLength);
+      pLTERChunkReader.readAndSetChunckData(this._enumrableBinary);
 
-      pLTERChunkReader.read(
-        this._enumrableBinary,
-        this._PNGBuilder,
-        pLTEChunkLength
-      );
+      pLTERChunkReader.read(this._enumrableBinary, this._PNGBuilder);
 
       if (pLTERChunkReader.isChunckDataCorrupted(this._enumrableBinary))
         throw new Error("Unexpected CRC");
@@ -132,15 +126,11 @@ export default class Parser {
     const iDATChunkReader = new IDATChunkReader();
 
     while (iDATChunkReader.readable(this._enumrableBinary)) {
-      let chunkLength = this._enumrableBinary.nextBytes(4).stack();
+      iDATChunkReader.readAndSetChunkLength(this._enumrableBinary);
 
-      iDATChunkReader.setChunckData(this._enumrableBinary, chunkLength);
+      iDATChunkReader.readAndSetChunckData(this._enumrableBinary);
 
-      iDATChunkReader.read(
-        this._enumrableBinary,
-        this._PNGBuilder,
-        chunkLength
-      );
+      iDATChunkReader.read(this._enumrableBinary, this._PNGBuilder);
 
       if (iDATChunkReader.isChunckDataCorrupted(this._enumrableBinary))
         throw new Error("Unexpected CRC");
@@ -154,9 +144,9 @@ export default class Parser {
     if (!iENDChunkReader.readable(this._enumrableBinary))
       throw Error("Couldn't Find IEND header");
 
-    const iENDChunkLength = this._enumrableBinary.nextBytes(4).stack();
+    iENDChunkReader.readAndSetChunkLength(this._enumrableBinary);
 
-    iENDChunkReader.setChunckData(this._enumrableBinary, iENDChunkLength);
+    iENDChunkReader.readAndSetChunckData(this._enumrableBinary);
 
     iENDChunkReader.read(this._enumrableBinary, this._PNGBuilder);
 
