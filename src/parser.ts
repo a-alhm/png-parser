@@ -20,10 +20,10 @@ export default class Parser {
   private readonly pngBuilder: PNGBuilder;
 
   constructor(
-    @inject(TYPES.IIteratableBinary) enumrableBinary: IIteratableBinary,
+    @inject(TYPES.IIteratableBinary) iteratableBinary: IIteratableBinary,
     @inject(TYPES.PNGBuilder) builder: PNGBuilder
   ) {
-    this.iteratableBinary = enumrableBinary;
+    this.iteratableBinary = iteratableBinary;
     this.pngBuilder = builder;
   }
   parse(byets: ArrayBuffer): PNG {
