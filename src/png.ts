@@ -12,4 +12,5 @@ export default class PNG {
   paletteEntries: Uint8Array[];
   paletteEntriesTransparency: Uint8Array;
   gamaIntensity: number;
+  chromaticities: number[][];
 }

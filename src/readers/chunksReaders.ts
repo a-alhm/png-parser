@@ -98,6 +98,25 @@ export class gAMAChunkReader extends ChunckReader {
   }
 }
 
+// An sRGB chunk or iCCP chunk, when present and recognized, overrides the cHRM chunk.
+export class cHRMChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 330;
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    const data: number[][] = [];
+    for (let index = 0; index < 4; index++) {
+      const xy = [
+        this.binary.nextBytes(4).stack(),
+        this.binary.nextBytes(4).stack(),
+      ];
+      data.push(xy);
+    }
+
+    builder.setChromaticities(data);
+    this.leaveReadersList(readers);
+  }
+}
+
 export class IDATChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 290;

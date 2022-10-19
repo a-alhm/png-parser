@@ -4,7 +4,7 @@ import { injectable } from "inversify";
 
 @injectable()
 export default class PNGBuilder {
-  private _png;
+  private _png: PNG;
   private _InflatedImageData: Array<number>;
 
   constructor() {
@@ -59,6 +59,9 @@ export default class PNGBuilder {
   setGamaIntensity(data: number): PNGBuilder {
     this._png.gamaIntensity = data;
     return this;
+  }
+  setChromaticities(data: number[][]) {
+    this._png.chromaticities = data;
   }
   getPNG(): PNG {
     return this._png;
