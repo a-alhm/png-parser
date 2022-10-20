@@ -56,12 +56,24 @@ export default class PNGBuilder {
     this.png.ImageData = pako.inflate(this.InflatedImageData);
     return this;
   }
-  setGamaIntensity(data: number): PNGBuilder {
-    this.png.gamaIntensity = data;
+  setGamaIntensity(gamaIntensity: number): PNGBuilder {
+    this.png.gamaIntensity = gamaIntensity;
     return this;
   }
   setChromaticities(data: number[][]) {
     this.png.chromaticities = data;
+  }
+  setICCProfile(iCCProfile: any[]) {
+    this.png.ICCProfile = iCCProfile;
+  }
+  setRenderingIntent(renderingIntent: number) {
+    this.png.renderingIntent = renderingIntent;
+  }
+  setSignificantBits(significantBits: number[]) {
+    this.png.significantBits = significantBits;
+  }
+  setBackgroundColor(backgroundColor: Uint8Array[]) {
+    this.png.backgroundColor = backgroundColor;
   }
   getPNG(): PNG {
     return this.png;

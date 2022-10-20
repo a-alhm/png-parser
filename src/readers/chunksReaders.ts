@@ -1,6 +1,7 @@
 import Reader from "./baseReader";
 import PNGBuilder from "../builder";
 import crc32 from "crc/crc32";
+import pako from "pako";
 
 export abstract class ChunckReader extends Reader {
   protected abstract chunckData: Uint8Array;
@@ -26,6 +27,9 @@ export abstract class ChunckReader extends Reader {
   }
   protected leaveReadersList(readers: ChunckReader[]) {
     readers = readers.filter((r) => r === this);
+  }
+  protected removeFromReadersList(reader, readers: ChunckReader[]) {
+    readers = readers.filter((r) => r instanceof reader);
   }
 }
 
@@ -113,6 +117,121 @@ export class cHRMChunkReader extends ChunckReader {
     }
 
     builder.setChromaticities(data);
+    this.leaveReadersList(readers);
+  }
+}
+
+export class sRGBChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 334;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    builder.setRenderingIntent(this.binary.nextByte());
+
+    this.leaveReadersList(readers);
+    this.removeFromReadersList(iCCPChunkReader, readers);
+  }
+}
+
+export class iCCPChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 319;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    const data: any[] = [];
+
+    let accumulator = "";
+    let index = 0;
+    while (index < 79) {
+      if (this.binary.peek() === 0) break;
+
+      const byte = this.binary.nextByte();
+
+      if (!((byte >= 32 && byte <= 126) || byte >= 161 || byte <= 255)) return;
+
+      accumulator += String.fromCharCode(byte);
+
+      index++;
+    }
+
+    data.push(accumulator);
+
+    this.binary.nextByte();
+
+    const compressionMethod = this.binary.nextByte();
+    data.push(compressionMethod);
+
+    const compressedProfileLength = index + 2 - this.chunkLength;
+
+    const compressedProfile = pako.inflate(
+      this.binary.nextBytes(compressedProfileLength)
+    );
+
+    data.push(compressedProfile);
+
+    builder.setICCProfile(data);
+    this.leaveReadersList(readers);
+    this.removeFromReadersList(sRGBChunkReader, readers);
+  }
+}
+
+export class sBITChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 338;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    let significantBits;
+    const colorType = builder.getPNG().color;
+
+    switch (colorType) {
+      case 0:
+        significantBits = this.binary.nextBytes(1);
+        break;
+      case 2 || 3:
+        significantBits = this.binary.nextBytes(3);
+        break;
+      case 4:
+        significantBits = this.binary.nextBytes(2);
+        break;
+      case 6:
+        significantBits = this.binary.nextBytes(4);
+        break;
+      default:
+        return;
+    }
+
+    builder.setSignificantBits(significantBits);
+    this.leaveReadersList(readers);
+  }
+}
+
+export class bKGDChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 312;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    let backgroundColor: Uint8Array[] = [];
+    const colorType = builder.getPNG().color;
+
+    switch (colorType) {
+      case 0:
+        backgroundColor.push(this.binary.nextBytes(2));
+        break;
+      case 2 || 6:
+        backgroundColor.push(
+          this.binary.nextBytes(2),
+          this.binary.nextBytes(2),
+          this.binary.nextBytes(2)
+        );
+        break;
+      case 3:
+        backgroundColor.push(this.binary.nextBytes(1));
+        break;
+      default:
+        return;
+    }
+
+    builder.setBackgroundColor(backgroundColor);
     this.leaveReadersList(readers);
   }
 }

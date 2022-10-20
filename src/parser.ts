@@ -88,6 +88,7 @@ export default class Parser {
     }
     return this;
   }
+  // DO WE HAVE TO THROW AN ERROR IF THE CHUNCK IS OPITIONAL?
   private parsePLTEChunk(): Parser {
     const pLTERChunkReader = new PLTEChunkReader(this.iteratableBinary);
 

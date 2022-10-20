@@ -13,4 +13,8 @@ export default class PNG {
   paletteEntriesTransparency: Uint8Array;
   gamaIntensity: number;
   chromaticities: number[][];
+  ICCProfile: any[];
+  renderingIntent: number;
+  significantBits: number[];
+  backgroundColor: Uint8Array[];
 }
