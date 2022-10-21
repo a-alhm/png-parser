@@ -17,4 +17,5 @@ export default class PNG {
   renderingIntent: number;
   significantBits: number[];
   backgroundColor: Uint8Array[];
+  pixelDimensions: Uint8Array[];
 }

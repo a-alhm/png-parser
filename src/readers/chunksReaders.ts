@@ -236,6 +236,24 @@ export class bKGDChunkReader extends ChunckReader {
   }
 }
 
+export class pHYsChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 388;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    const pixelDimensions: Uint8Array[] = [];
+
+    pixelDimensions.push(
+      this.binary.nextBytes(4),
+      this.binary.nextBytes(4),
+      this.binary.nextBytes(1)
+    );
+
+    builder.setPixelDimensions(pixelDimensions);
+    this.leaveReadersList(readers);
+  }
+}
+
 export class IDATChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 290;

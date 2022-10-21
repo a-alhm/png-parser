@@ -75,6 +75,9 @@ export default class PNGBuilder {
   setBackgroundColor(backgroundColor: Uint8Array[]) {
     this.png.backgroundColor = backgroundColor;
   }
+  setPixelDimensions(pixelDimensions: Uint8Array[]) {
+    this.png.pixelDimensions = pixelDimensions;
+  }
   getPNG(): PNG {
     return this.png;
   }
