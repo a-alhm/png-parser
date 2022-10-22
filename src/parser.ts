@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import PNGBuilder from "./builder";
 import IIteratableBinary from "./IIteratableBinary";
 import { TYPES } from "./types";
-import PNG from "./png";
+import { PNG } from "./png";
 import FileSignatureReader from "./readers/fileSignatureReader";
 import {
   ChunckReader,
