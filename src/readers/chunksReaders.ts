@@ -4,7 +4,7 @@ import crc32 from "crc/crc32";
 import pako from "pako";
 
 export abstract class ChunckReader extends Reader {
-  protected abstract chunckData: Uint8Array;
+  protected chunckData: Uint8Array;
   protected chunkLength: number;
 
   abstract read(builder: PNGBuilder, readers?: ChunckReader[]): void;
@@ -34,7 +34,6 @@ export abstract class ChunckReader extends Reader {
 }
 
 export class IHDRChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 295;
   private IHDRChunckLength = 13;
 
@@ -63,7 +62,6 @@ export class IHDRChunkReader extends ChunckReader {
 }
 
 export class PLTEChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 309;
   read(builder: PNGBuilder): void {
     const plteDataRaw = this.binary.nextBytes(this.chunkLength);
@@ -79,7 +77,6 @@ export class PLTEChunkReader extends ChunckReader {
 
 export class tRNSChunkReader extends ChunckReader {
   protected chunkLength: number;
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 359;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -113,7 +110,6 @@ export class tRNSChunkReader extends ChunckReader {
 
 export class gAMAChunkReader extends ChunckReader {
   protected chunkLength: number;
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 310;
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
     const gAMAData = this.binary.nextBytes(4).stack();
@@ -124,7 +120,6 @@ export class gAMAChunkReader extends ChunckReader {
 }
 
 export class cHRMChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 330;
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
     const data: number[][] = [];
@@ -142,7 +137,6 @@ export class cHRMChunkReader extends ChunckReader {
 }
 
 export class sRGBChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 334;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -154,7 +148,6 @@ export class sRGBChunkReader extends ChunckReader {
 }
 
 export class iCCPChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 319;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -193,7 +186,6 @@ export class iCCPChunkReader extends ChunckReader {
 }
 
 export class sBITChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 338;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -223,7 +215,6 @@ export class sBITChunkReader extends ChunckReader {
 }
 
 export class bKGDChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 312;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -254,7 +245,6 @@ export class bKGDChunkReader extends ChunckReader {
 }
 
 export class pHYsChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 388;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -272,7 +262,6 @@ export class pHYsChunkReader extends ChunckReader {
 }
 
 export class sPLTChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 355;
 
   read(builder: PNGBuilder): void {
@@ -342,7 +331,6 @@ export class sPLTChunkReader extends ChunckReader {
 }
 
 export class hISTChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 344;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
@@ -359,7 +347,6 @@ export class hISTChunkReader extends ChunckReader {
 }
 
 export class IDATChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 290;
   read(builder: PNGBuilder): void {
     const IDATData = this.binary.nextBytes(this.chunkLength);
@@ -369,7 +356,6 @@ export class IDATChunkReader extends ChunckReader {
 }
 
 export class IENDChunkReader extends ChunckReader {
-  protected chunckData: Uint8Array;
   protected readonly headerNumber = 288;
   read(builder: PNGBuilder): void {
     builder.inflateImageData();
