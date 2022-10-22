@@ -77,7 +77,6 @@ export class PLTEChunkReader extends ChunckReader {
   }
 }
 
-// need to be changed
 export class tRNSChunkReader extends ChunckReader {
   protected chunkLength: number;
   protected chunckData: Uint8Array;
