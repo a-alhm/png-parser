@@ -299,14 +299,14 @@ export class sPLTChunkReader extends ChunckReader {
 
     const sampleDepth = this.binary.nextByte();
 
-    const allowedSampleDepths = {
-      8: () => this.extractEntries(0, 6, 1),
-      16: () => this.extractEntries(0, 10, 2),
-    };
-
     if (!(sampleDepth === 8 || sampleDepth === 16)) return;
 
     let remainingLength = this.chunkLength - (index + 3);
+
+    const allowedSampleDepths = {
+      8: () => this.extractEntries(remainingLength, 6, 1),
+      16: () => this.extractEntries(remainingLength, 10, 2),
+    };
 
     const entries = allowedSampleDepths[sampleDepth]();
 
