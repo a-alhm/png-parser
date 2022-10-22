@@ -64,7 +64,7 @@ export class IHDRChunkReader extends ChunckReader {
 
 export class PLTEChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
-  protected readonly headerNumber = 295;
+  protected readonly headerNumber = 309;
   read(builder: PNGBuilder): void {
     const plteDataRaw = this.binary.nextBytes(this.chunkLength);
     const plteDataPlatted = plteDataRaw.packEvery(3);
