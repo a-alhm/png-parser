@@ -341,6 +341,23 @@ export class sPLTChunkReader extends ChunckReader {
   }
 }
 
+export class hISTChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 344;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    const paletteEntriesLength = builder.getPNG().paletteEntries.length;
+
+    const frequencies = [];
+    for (let index = 0; index < paletteEntriesLength; index++) {
+      frequencies.push(this.binary.nextBytes(2));
+    }
+
+    builder.setImageHistogram(frequencies);
+    this.leaveReadersList(readers);
+  }
+}
+
 export class IDATChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 290;

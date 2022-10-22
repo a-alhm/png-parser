@@ -22,6 +22,7 @@ export class PNG {
   backgroundColor: Uint8Array[];
   pixelDimensions: Uint8Array[];
   suggestedPalette: SuggestedPalette[];
+  imageHistogram: Uint8Array[];
 }
 export class ICCProfile {
   name: string;

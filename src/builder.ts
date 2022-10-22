@@ -105,6 +105,9 @@ export default class PNGBuilder {
 
     this.png.suggestedPalette.push(suggestedPalette);
   }
+  setImageHistogram(imageHistogram: Uint8Array[]) {
+    this.png.imageHistogram = imageHistogram;
+  }
   getPNG(): PNG {
     return this.png;
   }
