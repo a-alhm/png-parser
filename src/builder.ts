@@ -1,4 +1,4 @@
-import { PNG, SuggestedPalette } from "./png";
+import { PNG, SuggestedPalette, ICCProfile } from "./png";
 import pako from "pako";
 import { injectable } from "inversify";
 
@@ -65,7 +65,17 @@ export default class PNGBuilder {
   setChromaticities(data: number[][]) {
     this.png.chromaticities = data;
   }
-  setICCProfile(iCCProfile: any[]) {
+  setICCProfile(
+    name: string,
+    compressionMethod: number,
+    compressedProfile: Uint8Array
+  ) {
+    const iCCProfile = new ICCProfile();
+
+    iCCProfile.name = name;
+    iCCProfile.compressionMethod = compressionMethod;
+    iCCProfile.compressedProfile = compressedProfile;
+
     this.png.ICCProfile = iCCProfile;
   }
   setRenderingIntent(renderingIntent: number) {

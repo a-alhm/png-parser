@@ -16,14 +16,18 @@ export class PNG {
   paletteEntriesTransparency: Uint8Array[] | Uint8Array;
   gamaIntensity: number;
   chromaticities: number[][];
-  ICCProfile: any[];
+  ICCProfile: ICCProfile;
   renderingIntent: number;
   significantBits: number[];
   backgroundColor: Uint8Array[];
   pixelDimensions: Uint8Array[];
   suggestedPalette: SuggestedPalette[];
 }
-
+export class ICCProfile {
+  name: string;
+  compressionMethod: number;
+  compressedProfile: Uint8Array;
+}
 export class SuggestedPalette {
   name: string;
   depth: number;

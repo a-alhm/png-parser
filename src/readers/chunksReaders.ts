@@ -174,12 +174,11 @@ export class iCCPChunkReader extends ChunckReader {
       index++;
     }
 
-    data.push(accumulator);
+    const name = accumulator;
 
     this.binary.nextByte();
 
     const compressionMethod = this.binary.nextByte();
-    data.push(compressionMethod);
 
     const compressedProfileLength = this.chunkLength - (index + 2);
 
@@ -187,9 +186,7 @@ export class iCCPChunkReader extends ChunckReader {
       this.binary.nextBytes(compressedProfileLength)
     );
 
-    data.push(compressedProfile);
-
-    builder.setICCProfile(data);
+    builder.setICCProfile(name, compressionMethod, compressedProfile);
     this.leaveReadersList(readers);
     this.removeFromReadersList(sRGBChunkReader, readers);
   }
