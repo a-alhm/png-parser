@@ -1,4 +1,7 @@
-export default class PNG {
+export class PNG {
+  constructor() {
+    this.suggestedPalette = [];
+  }
   ImageData;
   plte: Uint8Array;
   tRNS: Uint8Array;
@@ -18,4 +21,12 @@ export default class PNG {
   significantBits: number[];
   backgroundColor: Uint8Array[];
   pixelDimensions: Uint8Array[];
+  suggestedPalette: SuggestedPalette[];
+}
+
+export class SuggestedPalette {
+  name: string;
+  depth: number;
+  entries: number[][];
+  frequencies: number[][];
 }

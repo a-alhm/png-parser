@@ -1,4 +1,4 @@
-import PNG from "./png";
+import { PNG, SuggestedPalette } from "./png";
 import pako from "pako";
 import { injectable } from "inversify";
 
@@ -77,6 +77,21 @@ export default class PNGBuilder {
   }
   setPixelDimensions(pixelDimensions: Uint8Array[]) {
     this.png.pixelDimensions = pixelDimensions;
+  }
+  setSuggestedPalette(
+    name: string,
+    depth: number,
+    entries: number[][],
+    frequencies: number[][]
+  ) {
+    const suggestedPalette = new SuggestedPalette();
+
+    suggestedPalette.name = name;
+    suggestedPalette.depth = depth;
+    suggestedPalette.entries = entries;
+    suggestedPalette.frequencies = frequencies;
+
+    this.png.suggestedPalette.push(suggestedPalette);
   }
   getPNG(): PNG {
     return this.png;

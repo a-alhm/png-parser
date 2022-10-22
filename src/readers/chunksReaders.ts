@@ -254,6 +254,76 @@ export class pHYsChunkReader extends ChunckReader {
   }
 }
 
+export class sPLTChunkReader extends ChunckReader {
+  protected chunckData: Uint8Array;
+  protected readonly headerNumber = 355;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    let accumulator = "";
+    let index = 0;
+    while (index < 79) {
+      if (this.binary.peek() === 0) break;
+
+      const byte = this.binary.nextByte();
+
+      if (!((byte >= 32 && byte <= 126) || byte >= 161 || byte <= 255)) return;
+
+      accumulator += String.fromCharCode(byte);
+
+      index++;
+    }
+
+    const name = accumulator;
+
+    this.binary.nextByte();
+
+    const sampleDepth = this.binary.nextByte();
+
+    const allowedSampleDepths = {
+      8: () => this.extractEntries(0, 6, 1),
+      16: () => this.extractEntries(0, 10, 2),
+    };
+
+    if (!(sampleDepth === 8 || sampleDepth === 16)) return;
+
+    let remainingLength = this.chunkLength - (index + 3);
+
+    const entries = allowedSampleDepths[sampleDepth]();
+
+    if (!entries) return;
+
+    remainingLength -= sampleDepth / 2;
+
+    const paletteEntriesLength = builder.getPNG().paletteEntries.length;
+
+    const frequencies = [];
+    for (let index = 0; index < paletteEntriesLength; index++) {
+      frequencies.push(this.binary.nextBytes(2));
+    }
+
+    builder.setSuggestedPalette(name, sampleDepth, entries, frequencies);
+  }
+
+  private extractEntries(
+    remainingLength: number,
+    divisible: number,
+    rgbaByetsLength
+  ) {
+    let entries;
+
+    if (remainingLength % divisible !== 0) return;
+
+    entries = [
+      this.binary.nextBytes(rgbaByetsLength),
+      this.binary.nextBytes(rgbaByetsLength),
+      this.binary.nextBytes(rgbaByetsLength),
+      this.binary.nextBytes(rgbaByetsLength),
+    ];
+
+    return entries;
+  }
+}
+
 export class IDATChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 290;
