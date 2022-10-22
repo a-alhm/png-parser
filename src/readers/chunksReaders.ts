@@ -278,7 +278,7 @@ export class sPLTChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 355;
 
-  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+  read(builder: PNGBuilder): void {
     let accumulator = "";
     let index = 0;
     while (index < 79) {
