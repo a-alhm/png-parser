@@ -77,6 +77,7 @@ export class PLTEChunkReader extends ChunckReader {
   }
 }
 
+// need to be changed
 export class tRNSChunkReader extends ChunckReader {
   protected chunkLength: number;
   protected chunckData: Uint8Array;
@@ -133,6 +134,7 @@ export class sRGBChunkReader extends ChunckReader {
   }
 }
 
+// need to be changed
 export class iCCPChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 319;
@@ -161,7 +163,7 @@ export class iCCPChunkReader extends ChunckReader {
     const compressionMethod = this.binary.nextByte();
     data.push(compressionMethod);
 
-    const compressedProfileLength = index + 2 - this.chunkLength;
+    const compressedProfileLength = this.chunkLength - (index + 2);
 
     const compressedProfile = pako.inflate(
       this.binary.nextBytes(compressedProfileLength)
