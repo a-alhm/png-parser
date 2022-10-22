@@ -134,7 +134,6 @@ export class sRGBChunkReader extends ChunckReader {
   }
 }
 
-// need to be changed
 export class iCCPChunkReader extends ChunckReader {
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 319;
