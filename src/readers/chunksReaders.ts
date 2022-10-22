@@ -82,8 +82,29 @@ export class tRNSChunkReader extends ChunckReader {
   protected chunkLength: number;
   protected chunckData: Uint8Array;
   protected readonly headerNumber = 359;
+
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
-    const tRNSData = this.binary.nextBytes(this.chunkLength);
+    let tRNSData: Uint8Array[] | Uint8Array = [];
+
+    const colorType = builder.getPNG().color;
+
+    switch (colorType) {
+      case 0:
+        tRNSData.push(this.binary.nextBytes(2));
+        break;
+      case 2:
+        tRNSData.push(
+          this.binary.nextBytes(2),
+          this.binary.nextBytes(2),
+          this.binary.nextBytes(2)
+        );
+        break;
+      case 3:
+        tRNSData = this.binary.nextBytes(this.chunkLength);
+        break;
+      default:
+        return;
+    }
 
     builder.setPaletteEntriesTransparency(tRNSData);
 

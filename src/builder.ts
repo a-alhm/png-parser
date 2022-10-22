@@ -40,7 +40,9 @@ export default class PNGBuilder {
     this.png.paletteEntries = entries;
     return this;
   }
-  setPaletteEntriesTransparency(entries: Uint8Array): PNGBuilder {
+  setPaletteEntriesTransparency(
+    entries: Uint8Array[] | Uint8Array
+  ): PNGBuilder {
     this.png.paletteEntriesTransparency = entries;
     return this;
   }

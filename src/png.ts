@@ -13,7 +13,7 @@ export class PNG {
   compressionMethod: number;
   filterMethod: number;
   paletteEntries: Uint8Array[];
-  paletteEntriesTransparency: Uint8Array;
+  paletteEntriesTransparency: Uint8Array[] | Uint8Array;
   gamaIntensity: number;
   chromaticities: number[][];
   ICCProfile: any[];
