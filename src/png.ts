@@ -1,8 +1,11 @@
 export class PNG {
   constructor() {
     this.suggestedPalette = [];
+    this.textualData = [];
+    this.compressedTextualData = [];
   }
-  ImageData;
+
+  imageData;
   plte: Uint8Array;
   tRNS: Uint8Array;
   isInterlaced: number;
@@ -23,6 +26,9 @@ export class PNG {
   pixelDimensions: Uint8Array[];
   suggestedPalette: SuggestedPalette[];
   imageHistogram: Uint8Array[];
+  lastModificationTime: Time;
+  textualData: string[][];
+  compressedTextualData: string[][];
 }
 export class ICCProfile {
   name: string;
@@ -34,4 +40,12 @@ export class SuggestedPalette {
   depth: number;
   entries: number[][];
   frequencies: number[][];
+}
+export class Time {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
 }

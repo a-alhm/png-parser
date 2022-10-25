@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
-import BytesIterator from "./BytesIterator";
-import IIteratableBinary from "../IIteratableBinary";
+import BytesIterator from "./modules/BytesIterator";
+import IIteratableBinary from "./IIteratableBinary";
 
 @injectable()
 export default class IteratableBinary

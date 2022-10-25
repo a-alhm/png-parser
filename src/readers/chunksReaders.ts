@@ -1,8 +1,6 @@
 import Reader from "./baseReader";
 import PNGBuilder from "../builder";
-import crc32 from "crc/crc32";
-import pako from "pako";
-
+import DatastreamUtils from "../modules/DatastreamUtils";
 export abstract class ChunckReader extends Reader {
   protected chunckData: Uint8Array;
   protected chunkLength: number;
@@ -20,7 +18,7 @@ export abstract class ChunckReader extends Reader {
   }
   isChunckDataCorrupted(): boolean {
     let chunckCRC = this.binary.nextBytes(4).stack() >>> 0;
-    const calculatedCRC = crc32(this.chunckData);
+    const calculatedCRC = DatastreamUtils.crc(this.chunckData);
 
     if (chunckCRC === calculatedCRC) return false;
     return true;
@@ -30,6 +28,23 @@ export abstract class ChunckReader extends Reader {
   }
   protected removeFromReadersList(reader, readers: ChunckReader[]) {
     readers = readers.filter((r) => r instanceof reader);
+  }
+  protected readText(): string {
+    let accumulator = "";
+    let index = 0;
+    while (index < 79) {
+      if (this.binary.peek() === 0) break;
+
+      const byte = this.binary.nextByte();
+
+      if (!((byte >= 32 && byte <= 126) || byte >= 161 || byte <= 255)) return;
+
+      accumulator += String.fromCharCode(byte);
+
+      index++;
+    }
+
+    return accumulator;
   }
 }
 
@@ -151,31 +166,17 @@ export class iCCPChunkReader extends ChunckReader {
   protected readonly headerNumber = 319;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
-    const data: any[] = [];
+    const name = this.readText();
 
-    let accumulator = "";
-    let index = 0;
-    while (index < 79) {
-      if (this.binary.peek() === 0) break;
-
-      const byte = this.binary.nextByte();
-
-      if (!((byte >= 32 && byte <= 126) || byte >= 161 || byte <= 255)) return;
-
-      accumulator += String.fromCharCode(byte);
-
-      index++;
-    }
-
-    const name = accumulator;
+    if (!name) return;
 
     this.binary.nextByte();
 
     const compressionMethod = this.binary.nextByte();
 
-    const compressedProfileLength = this.chunkLength - (index + 2);
+    const compressedProfileLength = this.chunkLength - (name.length + 1);
 
-    const compressedProfile = pako.inflate(
+    const compressedProfile = DatastreamUtils.inflate(
       this.binary.nextBytes(compressedProfileLength)
     );
 
@@ -265,21 +266,9 @@ export class sPLTChunkReader extends ChunckReader {
   protected readonly headerNumber = 355;
 
   read(builder: PNGBuilder): void {
-    let accumulator = "";
-    let index = 0;
-    while (index < 79) {
-      if (this.binary.peek() === 0) break;
+    const name = this.readText();
 
-      const byte = this.binary.nextByte();
-
-      if (!((byte >= 32 && byte <= 126) || byte >= 161 || byte <= 255)) return;
-
-      accumulator += String.fromCharCode(byte);
-
-      index++;
-    }
-
-    const name = accumulator;
+    if (!name) return;
 
     this.binary.nextByte();
 
@@ -287,7 +276,7 @@ export class sPLTChunkReader extends ChunckReader {
 
     if (!(sampleDepth === 8 || sampleDepth === 16)) return;
 
-    let remainingLength = this.chunkLength - (index + 3);
+    let remainingLength = this.chunkLength - (name.length + 2);
 
     const allowedSampleDepths = {
       8: () => this.extractEntries(remainingLength, 6, 1),
@@ -343,6 +332,77 @@ export class hISTChunkReader extends ChunckReader {
 
     builder.setImageHistogram(frequencies);
     this.leaveReadersList(readers);
+  }
+}
+
+export class tIMEChunkReader extends ChunckReader {
+  protected readonly headerNumber = 335;
+
+  read(builder: PNGBuilder, readers: ChunckReader[]): void {
+    builder.setLastModificationTime(
+      this.binary.nextBytes(2).stack(),
+      this.binary.nextByte(),
+      this.binary.nextByte(),
+      this.binary.nextByte(),
+      this.binary.nextByte(),
+      this.binary.nextByte()
+    );
+
+    this.leaveReadersList(readers);
+  }
+}
+
+export class tEXtChunkReader extends ChunckReader {
+  protected readonly headerNumber = 389;
+
+  read(builder: PNGBuilder): void {
+    const textualData = [];
+
+    const keyword = this.readText();
+
+    if (!keyword) return;
+
+    this.binary.nextByte();
+
+    textualData.push(keyword);
+
+    const remainingLength = this.chunkLength - keyword.length;
+
+    const textString = this.binary.nextBytes(remainingLength).stringify();
+
+    textualData.push(textString);
+
+    builder.setTextualData(textualData);
+  }
+}
+
+export class zTXtChunkReader extends ChunckReader {
+  protected readonly headerNumber = 410;
+
+  read(builder: PNGBuilder): void {
+    const compressedTextualData = [];
+
+    const keyword = this.readText();
+
+    if (!keyword) return;
+
+    this.binary.nextByte();
+
+    compressedTextualData.push(keyword);
+
+    const compressionMethod = this.binary.nextByte();
+
+    compressedTextualData.push(compressionMethod);
+
+    const remainingLength = this.chunkLength - keyword.length - 1;
+
+    const compressedTextDatastream = DatastreamUtils.inflate(
+      this.binary.nextBytes(remainingLength)
+    ).stringify();
+
+    compressedTextualData.push(compressedTextDatastream);
+
+    builder.setCompressedTextualData(compressedTextualData);
   }
 }
 

@@ -1,15 +1,14 @@
-import { PNG, SuggestedPalette, ICCProfile } from "./png";
-import pako from "pako";
+import { PNG, SuggestedPalette, ICCProfile, Time } from "./png";
 import { injectable } from "inversify";
+import DatastreamUtils from "./modules/DatastreamUtils";
 
 @injectable()
 export default class PNGBuilder {
   private png: PNG;
-  private InflatedImageData: Array<number>;
-
+  private inflatedImageData: number[];
   constructor() {
     this.png = new PNG();
-    this.InflatedImageData = [];
+    this.inflatedImageData = [];
   }
 
   setWidth(width: number): PNGBuilder {
@@ -51,11 +50,11 @@ export default class PNGBuilder {
     return this;
   }
   pushImageData(data: Uint8Array): PNGBuilder {
-    this.InflatedImageData.push(...data);
+    this.inflatedImageData.push(...data);
     return this;
   }
   inflateImageData(): PNGBuilder {
-    this.png.ImageData = pako.inflate(this.InflatedImageData);
+    this.png.imageData = DatastreamUtils.inflate(this.inflatedImageData);
     return this;
   }
   setGamaIntensity(gamaIntensity: number): PNGBuilder {
@@ -107,6 +106,31 @@ export default class PNGBuilder {
   }
   setImageHistogram(imageHistogram: Uint8Array[]) {
     this.png.imageHistogram = imageHistogram;
+  }
+  setLastModificationTime(
+    year: number,
+    month: number,
+    day: number,
+    hour: number,
+    minute: number,
+    second: number
+  ) {
+    const lastModificationTime = new Time();
+
+    lastModificationTime.year = year;
+    lastModificationTime.year = month;
+    lastModificationTime.year = day;
+    lastModificationTime.year = hour;
+    lastModificationTime.year = minute;
+    lastModificationTime.year = second;
+
+    this.png.lastModificationTime = lastModificationTime;
+  }
+  setTextualData(textualData: string[]) {
+    this.png.textualData.push(textualData);
+  }
+  setCompressedTextualData(compressedTextualData: string[]) {
+    this.png.compressedTextualData.push(compressedTextualData);
   }
   getPNG(): PNG {
     return this.png;

@@ -2,6 +2,7 @@ interface Uint8Array {
   sum(): number;
   stack(): number;
   packEvery(length: number): Uint8Array[];
+  stringify(): string;
 }
 
 Uint8Array.prototype.sum = function () {
@@ -18,9 +19,17 @@ Uint8Array.prototype.stack = function () {
 };
 
 Uint8Array.prototype.packEvery = function (length: number) {
-  var result: Uint8Array[] = [];
+  let result: Uint8Array[] = [];
   for (let i = 0; i < this.length; i += length) {
     result.push(this.slice(i, i + length));
+  }
+  return result;
+};
+
+Uint8Array.prototype.stringify = function () {
+  let result: string = "";
+  for (let i = 0; i < this.length; i += length) {
+    result += String.fromCharCode(this[i]);
   }
   return result;
 };
