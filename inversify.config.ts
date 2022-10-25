@@ -2,8 +2,7 @@ import "reflect-metadata";
 
 import { Container } from "inversify";
 import { TYPES } from "./src/types";
-import IteratableBinary from "./src/IteratableBinary";
-import IIteratableBinary from "./src/IIteratableBinary";
+import { IteratableBinary, IIteratableBinary } from "./src/iteratableBinary";
 import Parser from "./src/parser";
 import PNGBuilder from "./src/builder";
 

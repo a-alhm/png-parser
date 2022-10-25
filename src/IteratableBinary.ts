@@ -1,8 +1,15 @@
 import { injectable } from "inversify";
 import BytesIterator from "./modules/BytesIterator";
-import IIteratableBinary from "./IIteratableBinary";
 
+export interface IIteratableBinary {
+  setInput(val): void;
+  nextByte(): number;
+  nextBytes(length: number): Uint8Array;
+  hasMore(): boolean;
+  peekBytes(length: number): Uint8Array;
+  peek(): number;
+}
 @injectable()
-export default class IteratableBinary
+export class IteratableBinary
   extends BytesIterator
   implements IIteratableBinary {}

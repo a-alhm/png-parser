@@ -1,4 +1,4 @@
-import IIteratableBinary from "../IIteratableBinary";
+import { IIteratableBinary } from "../iteratableBinary";
 
 abstract class Reader {
   protected abstract readonly headerNumber: number;
