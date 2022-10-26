@@ -461,16 +461,12 @@ export class iTXtChunkReader extends ChunckReader {
   }
 
   protected readNullSeparatedText(): string {
-
     let accumulator = "";
-    let index = 0;
+    
     while (this.binary.peek() === 0) {
-
       const byte = this.binary.nextByte();
 
       accumulator += String.fromCharCode(byte);
-
-      index++;
     }
 
     return accumulator;
