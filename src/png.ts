@@ -3,6 +3,7 @@ export class PNG {
     this.suggestedPalette = [];
     this.textualData = [];
     this.compressedTextualData = [];
+    this.internationalTextualData = [];
   }
 
   imageData;
@@ -29,6 +30,7 @@ export class PNG {
   lastModificationTime: Time;
   textualData: string[][];
   compressedTextualData: string[][];
+  internationalTextualData: string[][];
 }
 export class ICCProfile {
   name: string;

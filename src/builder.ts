@@ -132,6 +132,9 @@ export default class PNGBuilder {
   setCompressedTextualData(compressedTextualData: string[]) {
     this.png.compressedTextualData.push(compressedTextualData);
   }
+  setInternationalTextualData(internationalTextualData: string[]) {
+    this.png.internationalTextualData.push(internationalTextualData);
+  }
   getPNG(): PNG {
     return this.png;
   }

@@ -29,7 +29,7 @@ export abstract class ChunckReader extends Reader {
   protected removeFromReadersList(reader, readers: ChunckReader[]) {
     readers = readers.filter((r) => r instanceof reader);
   }
-  protected readText(): string {
+  protected readKeywordText(): string {
     let accumulator = "";
     let index = 0;
     while (index < 79) {
@@ -166,7 +166,7 @@ export class iCCPChunkReader extends ChunckReader {
   protected readonly headerNumber = 319;
 
   read(builder: PNGBuilder, readers: ChunckReader[]): void {
-    const name = this.readText();
+    const name = this.readKeywordText();
 
     if (!name) return;
 
@@ -266,7 +266,7 @@ export class sPLTChunkReader extends ChunckReader {
   protected readonly headerNumber = 355;
 
   read(builder: PNGBuilder): void {
-    const name = this.readText();
+    const name = this.readKeywordText();
 
     if (!name) return;
 
@@ -358,7 +358,7 @@ export class tEXtChunkReader extends ChunckReader {
   read(builder: PNGBuilder): void {
     const textualData = [];
 
-    const keyword = this.readText();
+    const keyword = this.readKeywordText();
 
     if (!keyword) return;
 
@@ -382,7 +382,7 @@ export class zTXtChunkReader extends ChunckReader {
   read(builder: PNGBuilder): void {
     const compressedTextualData = [];
 
-    const keyword = this.readText();
+    const keyword = this.readKeywordText();
 
     if (!keyword) return;
 
@@ -405,6 +405,78 @@ export class zTXtChunkReader extends ChunckReader {
     builder.setCompressedTextualData(compressedTextualData);
   }
 }
+
+export class iTXtChunkReader extends ChunckReader {
+  protected readonly headerNumber = 393;
+
+  read(builder: PNGBuilder): void {
+    const internationalTextualData = [];
+
+
+    const keyword = this.readKeywordText();
+
+    if (!keyword) return;
+
+    this.binary.nextByte();
+
+    internationalTextualData.push(keyword);
+
+
+    const compressionFlag = this.binary.nextByte();
+
+    internationalTextualData.push(compressionFlag);
+
+
+    const compressionMethod = this.binary.nextByte();
+
+    internationalTextualData.push(compressionMethod);
+
+
+    const languageTag = this.readNullSeparatedText();
+
+    internationalTextualData.push(languageTag);
+
+
+    this.binary.nextByte();
+
+
+    const translatedKeyword = this.readNullSeparatedText();
+    
+    internationalTextualData.push(translatedKeyword);
+
+
+    this.binary.nextByte();
+
+
+    const remainingLength = this.chunkLength - (keyword.length + languageTag.length + translatedKeyword.length +  5);
+
+    let text = this.binary.nextBytes(remainingLength);
+
+    if(compressionFlag) text = DatastreamUtils.inflate(text);
+
+    internationalTextualData.push(text);
+
+    
+    builder.setInternationalTextualData(internationalTextualData);
+  }
+
+  protected readNullSeparatedText(): string {
+
+    let accumulator = "";
+    let index = 0;
+    while (this.binary.peek() === 0) {
+
+      const byte = this.binary.nextByte();
+
+      accumulator += String.fromCharCode(byte);
+
+      index++;
+    }
+
+    return accumulator;
+  }
+}
+
 
 export class IDATChunkReader extends ChunckReader {
   protected readonly headerNumber = 290;
