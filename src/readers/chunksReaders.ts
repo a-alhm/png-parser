@@ -454,7 +454,7 @@ export class iTXtChunkReader extends ChunckReader {
 
     if(compressionFlag) text = DatastreamUtils.inflate(text);
 
-    internationalTextualData.push(text);
+    internationalTextualData.push(text.stringify());
 
     
     builder.setInternationalTextualData(internationalTextualData);
