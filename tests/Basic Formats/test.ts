@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { expect } from "chai";
 import parsePng from "../../index";
-import { PNG } from "../../src/png";
 
 describe("Basic Formats", () => {
   it("black & white", () => {
