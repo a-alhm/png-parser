@@ -12,6 +12,18 @@ import {
   IDATChunkReader,
   IENDChunkReader,
   gAMAChunkReader,
+  tIMEChunkReader,
+  zTXtChunkReader,
+  tEXtChunkReader,
+  iTXtChunkReader,
+  pHYsChunkReader,
+  sPLTChunkReader,
+  iCCPChunkReader,
+  sRGBChunkReader,
+  sBITChunkReader,
+  cHRMChunkReader,
+  bKGDChunkReader,
+  hISTChunkReader
 } from "./readers/chunksReaders";
 
 @injectable()
@@ -31,9 +43,26 @@ export default class Parser {
 
     this.parseFileSignature()
       .parseIHDRChunk()
-      .parseAncillaryChunks()
+      .parseAncillaryChunks([
+        new gAMAChunkReader(this.iteratableBinary),
+        new tIMEChunkReader(this.iteratableBinary),
+        new zTXtChunkReader(this.iteratableBinary),
+        new tEXtChunkReader(this.iteratableBinary),
+        new iTXtChunkReader(this.iteratableBinary),
+        new pHYsChunkReader(this.iteratableBinary),
+        new sPLTChunkReader(this.iteratableBinary),
+        new iCCPChunkReader(this.iteratableBinary),
+        new sRGBChunkReader(this.iteratableBinary),
+        new sBITChunkReader(this.iteratableBinary),
+        new cHRMChunkReader(this.iteratableBinary),
+      ])
       .parsePLTEChunk()
       .verifyPLTEChunkWithColorType()
+      .parseAncillaryChunks([
+        new tRNSChunkReader(this.iteratableBinary),
+        new bKGDChunkReader(this.iteratableBinary),
+        new hISTChunkReader(this.iteratableBinary)
+      ])
       .parseIDATChunk()
       .parseIENDChunk();
 
@@ -68,12 +97,7 @@ export default class Parser {
 
     return this;
   }
-  private parseAncillaryChunks(): Parser {
-    const ancillaryChunksReaders: ChunckReader[] = [
-      new gAMAChunkReader(this.iteratableBinary),
-      new tRNSChunkReader(this.iteratableBinary),
-    ];
-
+  private parseAncillaryChunks(ancillaryChunksReaders: ChunckReader[]): Parser {
     for (let index = 0; index < ancillaryChunksReaders.length; index++) {
       const reader = ancillaryChunksReaders[index];
 
