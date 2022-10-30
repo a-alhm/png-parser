@@ -23,7 +23,7 @@ import {
   sBITChunkReader,
   cHRMChunkReader,
   bKGDChunkReader,
-  hISTChunkReader
+  hISTChunkReader,
 } from "./readers/chunksReaders";
 
 @injectable()
@@ -61,7 +61,7 @@ export default class Parser {
       .parseAncillaryChunks([
         new tRNSChunkReader(this.iteratableBinary),
         new bKGDChunkReader(this.iteratableBinary),
-        new hISTChunkReader(this.iteratableBinary)
+        new hISTChunkReader(this.iteratableBinary),
       ])
       .parseIDATChunk()
       .parseIENDChunk();
