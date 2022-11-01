@@ -107,7 +107,10 @@ export default class Parser {
 
         reader.read(this.pngBuilder, ancillaryChunksReaders);
 
-        if (reader.isChunckDataCorrupted()) throw new Error("Unexpected CRC");
+        if (reader.isChunckDataCorrupted())
+          throw new Error(
+            "Unexpected CRC" + " Reader: " + reader.constructor.name
+          );
       }
     }
     return this;
