@@ -9,13 +9,13 @@ export class PNG {
   imageData;
   plte: Uint8Array;
   tRNS: Uint8Array;
-  isInterlaced: number;
-  bitDepth: number;
-  color: number;
+  isInterlaced: number; // convert to boolean
+  bitDepth: number; // convert to enum
+  color: number; // convert to enum
   width: number;
   height: number;
-  compressionMethod: number;
-  filterMethod: number;
+  compressionMethod: number; // convert to enum
+  filterMethod: number; // convert to enum
   paletteEntries: Uint8Array[];
   paletteEntriesTransparency: Uint8Array[] | Uint8Array;
   gamaIntensity: number;
