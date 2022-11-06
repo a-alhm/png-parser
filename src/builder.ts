@@ -1,11 +1,15 @@
 import { PNG, SuggestedPalette, ICCProfile, Time } from "./png";
 import { injectable } from "inversify";
-import DatastreamUtils from "./modules/DatastreamUtils";
 
 @injectable()
 export default class PNGBuilder {
   private png: PNG;
   private inflatedImageData: number[];
+
+  get InflatedImageData() {
+    return this.inflatedImageData;
+  }
+
   constructor() {
     this.png = new PNG();
     this.inflatedImageData = [];
@@ -53,8 +57,8 @@ export default class PNGBuilder {
     this.inflatedImageData.push(...data);
     return this;
   }
-  inflateImageData(): PNGBuilder {
-    this.png.imageData = DatastreamUtils.inflate(this.inflatedImageData);
+  setImageData(data: Uint8Array): PNGBuilder {
+    this.png.imageData = data;
     return this;
   }
   setGamaIntensity(gamaIntensity: number): PNGBuilder {
@@ -131,6 +135,9 @@ export default class PNGBuilder {
   }
   setCompressedTextualData(compressedTextualData: string[]) {
     this.png.compressedTextualData.push(compressedTextualData);
+  }
+  setInternationalTextualData(internationalTextualData: string[]) {
+    this.png.internationalTextualData.push(internationalTextualData);
   }
   getPNG(): PNG {
     return this.png;
