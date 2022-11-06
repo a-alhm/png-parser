@@ -197,7 +197,8 @@ export class sBITChunkReader extends ChunckReader {
       case 0:
         significantBits = this.binary.nextBytes(1);
         break;
-      case 2 || 3:
+      case 2:
+      case 3:
         significantBits = this.binary.nextBytes(3);
         break;
       case 4:
