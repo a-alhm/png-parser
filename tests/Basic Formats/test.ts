@@ -141,7 +141,7 @@ describe("Basic Formats", () => {
     test.width = 32;
     test.height = 32;
     test.bitDepth = 2;
-    test.color = 0;
+    test.color = 3;
     test.compressionMethod = 0;
     test.filterMethod = 0;
     test.isInterlaced = 0;
@@ -149,7 +149,7 @@ describe("Basic Formats", () => {
     test.imageDataLength = 288;
 
     parsePngTest(path.join(__dirname, "images", "basn3p02.png"), test);
-  });
+  }).timeout(10000);
 
   it("grayscale alpha-channel", () => {});
 
