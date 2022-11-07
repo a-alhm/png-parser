@@ -149,9 +149,45 @@ describe("Basic Formats", () => {
     test.imageDataLength = 288;
 
     parsePngTest(path.join(__dirname, "images", "basn3p02.png"), test);
-  }).timeout(10000);
+  });
 
-  it("grayscale alpha-channel", () => {});
+  describe("grayscale alpha-channel", () => {
+    const test = new PNGTest();
 
-  it("rgb color alpha-channel", () => {});
+    test.suggestedPaletteLength = 0;
+    test.textualDataLength = 0;
+    test.compressedTextualDataLength = 0;
+    test.internationalTextualDataLength = 0;
+    test.width = 32;
+    test.height = 32;
+    test.bitDepth = 8;
+    test.color = 4;
+    test.compressionMethod = 0;
+    test.filterMethod = 0;
+    test.isInterlaced = 0;
+    test.gamaIntensity = 100000;
+    test.imageDataLength = 2080;
+
+    parsePngTest(path.join(__dirname, "images", "basn4a08.png"), test);
+  });
+
+  describe("rgb color alpha-channel", () => {
+    const test = new PNGTest();
+
+    test.suggestedPaletteLength = 0;
+    test.textualDataLength = 0;
+    test.compressedTextualDataLength = 0;
+    test.internationalTextualDataLength = 0;
+    test.width = 32;
+    test.height = 32;
+    test.bitDepth = 8;
+    test.color = 6;
+    test.compressionMethod = 0;
+    test.filterMethod = 0;
+    test.isInterlaced = 0;
+    test.gamaIntensity = 100000;
+    test.imageDataLength = 4128;
+
+    parsePngTest(path.join(__dirname, "images", "basn6a08.png"), test);
+  });
 });
