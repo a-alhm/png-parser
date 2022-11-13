@@ -14,7 +14,7 @@ export default class PNGTest {
   compressionMethod: number; // convert to enum
   filterMethod: number; // convert to enum
   isInterlaced: number; // convert to boolean
-  gamaIntensity: number;
+  gamaIntensity: number | undefined;
   imageDataLength: number;
 
   parsePng(filePath: string, pngTest: PNGTest) {
