@@ -28,7 +28,7 @@ Uint8Array.prototype.packEvery = function (length: number) {
 
 Uint8Array.prototype.stringify = function () {
   let result: string = "";
-  for (let i = 0; i < this.length; i += length) {
+  for (let i = 0; i < this.length; i++) {
     result += String.fromCharCode(this[i]);
   }
   return result;
