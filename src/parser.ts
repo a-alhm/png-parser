@@ -111,6 +111,8 @@ export default class Parser {
           throw new Error(
             "Unexpected CRC" + " Reader: " + reader.constructor.name
           );
+
+        index = 0;
       }
     }
     return this;
