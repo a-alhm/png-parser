@@ -24,7 +24,9 @@ export abstract class ChunckReader extends Reader {
     return true;
   }
   protected leaveReadersList(readers: ChunckReader[]) {
-    readers = readers.filter((r) => r === this);
+    readers = readers.filter(
+      (r) => r.constructor.name !== this.constructor.name
+    );
   }
   protected removeFromReadersList(reader, readers: ChunckReader[]) {
     readers = readers.filter((r) => r instanceof reader);
@@ -227,7 +229,8 @@ export class bKGDChunkReader extends ChunckReader {
       case 0:
         backgroundColor.push(this.binary.nextBytes(2));
         break;
-      case 2 || 6:
+      case 6:
+      case 2:
         backgroundColor.push(
           this.binary.nextBytes(2),
           this.binary.nextBytes(2),
