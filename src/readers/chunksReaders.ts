@@ -367,7 +367,7 @@ export class tEXtChunkReader extends ChunckReader {
 
     textualData.push(keyword);
 
-    const remainingLength = this.chunkLength - keyword.length;
+    const remainingLength = this.chunkLength - keyword.length - 1;
 
     const textString = this.binary.nextBytes(remainingLength).stringify();
 
@@ -395,7 +395,7 @@ export class zTXtChunkReader extends ChunckReader {
 
     compressedTextualData.push(compressionMethod);
 
-    const remainingLength = this.chunkLength - keyword.length - 1;
+    const remainingLength = this.chunkLength - keyword.length - 2;
 
     const compressedTextDatastream = DatastreamUtils.inflate(
       this.binary.nextBytes(remainingLength)
