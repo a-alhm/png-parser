@@ -7,7 +7,7 @@ export default class PNGBuilder {
   private inflatedImageData: number[];
 
   get InflatedImageData() {
-    return this.inflatedImageData;
+    return Uint8Array.from(this.inflatedImageData);
   }
 
   constructor() {

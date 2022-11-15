@@ -5,7 +5,7 @@ export default class DatastreamUtils {
   static crc(data: Uint8Array) {
     return crc32(data);
   }
-  static inflate(data: Uint8Array | number[]): Uint8Array {
+  static inflate(data: Uint8Array): Uint8Array {
     return pako.inflate(data);
   }
 }
