@@ -7,7 +7,7 @@ export default class PNGBuilder {
   private inflatedImageData: number[];
 
   get InflatedImageData() {
-    return this.inflatedImageData;
+    return Uint8Array.from(this.inflatedImageData);
   }
 
   constructor() {
@@ -122,11 +122,11 @@ export default class PNGBuilder {
     const lastModificationTime = new Time();
 
     lastModificationTime.year = year;
-    lastModificationTime.year = month;
-    lastModificationTime.year = day;
-    lastModificationTime.year = hour;
-    lastModificationTime.year = minute;
-    lastModificationTime.year = second;
+    lastModificationTime.month = month;
+    lastModificationTime.day = day;
+    lastModificationTime.hour = hour;
+    lastModificationTime.minute = minute;
+    lastModificationTime.second = second;
 
     this.png.lastModificationTime = lastModificationTime;
   }
