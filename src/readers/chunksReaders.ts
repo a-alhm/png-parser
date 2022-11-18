@@ -293,10 +293,8 @@ export class sPLTChunkReader extends ChunckReader {
 
     remainingLength -= sampleDepth / 2;
 
-    const paletteEntriesLength = builder.getPNG().paletteEntries.length;
-
     const frequencies = [];
-    for (let index = 0; index < paletteEntriesLength; index++) {
+    for (let index = 0; index < remainingLength / 2; index++) {
       frequencies.push(this.binary.nextBytes(2));
     }
 
