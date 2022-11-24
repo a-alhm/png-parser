@@ -176,7 +176,7 @@ export class iCCPChunkReader extends ChunckReader {
 
     const compressionMethod = this.binary.nextByte();
 
-    const compressedProfileLength = this.chunkLength - (name.length + 1);
+    const compressedProfileLength = this.chunkLength - (name.length + 2);
 
     const compressedProfile = DatastreamUtils.inflate(
       this.binary.nextBytes(compressedProfileLength)
