@@ -132,7 +132,7 @@ export default class Parser {
       pLTERChunkReader.read(this.pngBuilder);
 
       if (pLTERChunkReader.isChunckDataCorrupted())
-        throw new Error("Unexpected CRC");
+        throw new Error("Unexpected PLTE CRC");
     }
 
     return this;
@@ -157,8 +157,9 @@ export default class Parser {
 
       iDATChunkReader.read(this.pngBuilder);
 
-      if (iDATChunkReader.isChunckDataCorrupted())
-        throw new Error("Unexpected CRC");
+      if (iDATChunkReader.isChunckDataCorrupted()) {
+        throw new Error("Unexpected IDAT CRC");
+      }
     }
 
     return this;
@@ -175,6 +176,6 @@ export default class Parser {
     iENDChunkReader.read(this.pngBuilder);
 
     if (iENDChunkReader.isChunckDataCorrupted())
-      throw new Error("Unexpected CRC");
+      throw new Error("Unexpected IEND CRC");
   }
 }
