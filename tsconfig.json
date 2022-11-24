@@ -1,26 +1,15 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "sourceMap": true,
-        "typeRoots": [
-            "./node_modules/@types",
-        ],
-        "types": [
-            "reflect-metadata",
-            "mocha",
-            "chai",
-            "node"
-        ],
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "declaration": true,
-    },
-    "include": [
-        "src",
-        "index.ts",
-        "inversify.config.ts",
-    ]
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "sourceMap": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["reflect-metadata", "mocha", "chai", "node"],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true
+  },
+  "include": ["src", "index.ts", "inversify.config.ts"]
 }
